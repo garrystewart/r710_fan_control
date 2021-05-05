@@ -1,4 +1,4 @@
-﻿@model IEnumerable<string>
+﻿@model decimal
 
 <!DOCTYPE html>
 
@@ -7,9 +7,6 @@
     <title>Index</title>
 </head>
 <body>
-    @foreach (string temperature in Model)
-    {
-        @temperature<br />
-    }
+    @Model
 </body>
 </html>

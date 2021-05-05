@@ -5,13 +5,24 @@
 <html>
 <head>
     <title>Fan</title>
+    <script src="~/Scripts/jquery-3.6.0.slim.min.js"></script>
 </head>
 <body>
     @using (Html.BeginForm())
     {
-        @Html.LabelFor(model => model.Speed)
-        @Html.EditorFor(model => model.Speed)
+        @Html.LabelFor(model => model.Speed)<br />
+        @*@Html.EditorFor(model => model.Speed)*@
+        <input type="range" min="0" max="100" name="Speed" value="@Html.ValueFor(model => model.Speed)" />
         <button type="submit">Submit</button>
     }
+    @using (Html.BeginForm("FanAuto", "Home"))
+    {
+        <button type="submit">Auto</button>
+    }
+    <script>
+        $('[name="Speed"]').on('input', function () {
+            $(this).attr('value', $(this).val());
+        });
+    </script>
 </body>
 </html>
