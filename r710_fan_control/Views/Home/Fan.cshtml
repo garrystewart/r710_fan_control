@@ -1,0 +1,17 @@
+﻿@model r710_fan_control.Models.Fan
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Fan</title>
+</head>
+<body>
+    @using (Html.BeginForm())
+    {
+        @Html.LabelFor(model => model.Speed)
+        @Html.EditorFor(model => model.Speed)
+        <button type="submit">Submit</button>
+    }
+</body>
+</html>

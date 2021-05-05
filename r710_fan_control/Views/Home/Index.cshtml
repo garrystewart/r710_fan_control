@@ -1,0 +1,15 @@
+﻿@model IEnumerable<string>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Index</title>
+</head>
+<body>
+    @foreach (string temperature in Model)
+    {
+        @temperature<br />
+    }
+</body>
+</html>
