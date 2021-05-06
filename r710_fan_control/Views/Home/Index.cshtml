@@ -8,5 +8,21 @@
 </head>
 <body>
     @Model
+        <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+        <script src="~/Scripts/jquery.signalR-2.4.2.min.js"></script>
+        <script src="~/signalr/hubs"></script>
+        <script>
+            $(function () {
+                var hub = $.connection.temperatureHub;
+                hub.client.updateTemperatures = function (temperatures) {
+                    console.log(temperatures);
+                    $('body').empty();
+                    $(temperatures.Result).each(function (index, temperature) {
+                        $('body').append(`${temperature.Display}<br />`);
+                    });                    
+                }
+                $.connection.hub.start().done();
+            });
+        </script>
 </body>
 </html>
