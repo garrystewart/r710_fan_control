@@ -1,0 +1,39 @@
+﻿<div style="background-color: black; font-family: Consolas; color:springgreen;" id="output"></div>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/moment/min/moment.min.js"></script>
+<script>
+    var connection = new signalR.HubConnectionBuilder().withUrl("/fansHub").build();
+
+    connection.on("UpdateFanSpeeds", function (data, latency, timestamp) {
+        console.log(data);
+        console.log(latency);
+        console.log(timestamp);
+        /*$('#output').empty();*/
+        var html = $('<span>');
+        $(data).each(function (index, obj) {
+            var span = $('<span>');
+            /*span.addClass('mr-2');*/
+            span.text(`Fan ${index + 1} ${obj.reading} | `);
+            html.append(span);
+            console.log(span.prop('outerHTML'));
+        });
+        var milliseconds = $('<span>');
+        milliseconds.text(`Latency ${latency}ms`);
+        html.append(milliseconds);
+        $('#output').append($(html).prop('outerHTML') + '<br />');
+    /*$('#output').append('Updated ' + moment().fromNow());*/
+
+        connection.invoke("UpdateFanSpeeds").catch(function (err) {
+            return console.error(err.toString());
+        });
+    });
+
+    connection.start().then(function () {
+        connection.invoke("UpdateFanSpeeds").catch(function (err) {
+            return console.error(err.toString());
+        });
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+</script>

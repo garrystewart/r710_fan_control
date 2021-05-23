@@ -124,6 +124,7 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Classes\Converter.cs" />
+    <Compile Include="Controllers\FanController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -132,9 +133,12 @@
     <Compile Include="Models\Fan.cs" />
     <Compile Include="Models\Stats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\FanService.cs" />
+    <Compile Include="Services\IPMIService.cs" />
     <Compile Include="Services\TemperatureService.cs" />
-    <Compile Include="SignalR\TemperatureHub.cs" />
+    <Compile Include="SignalR\StatsHub.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\HomeIndexVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -143,6 +147,8 @@
     <Content Include="Views\Home\Fan.cshtml" />
     <Content Include="Scripts\jquery-3.6.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.6.0.min.map" />
+    <Content Include="Views\Fan\Index.cshtml" />
+    <Content Include="Views\Fan\GetFans.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

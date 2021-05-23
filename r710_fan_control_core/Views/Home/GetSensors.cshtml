@@ -1,0 +1,54 @@
+﻿@model IEnumerable<r710_fan_control_core.Models.Sensor>
+
+@{
+    ViewData["Title"] = "GetSensors";
+}
+
+<h1>GetSensors</h1>
+
+@*<p>
+    <a asp-action="Create">Create New</a>
+</p>*@
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProbeName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reading)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Measurement)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            @*<th></th>*@
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProbeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Reading)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Measurement)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            @*<td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>*@
+        </tr>
+}
+    </tbody>
+</table>
