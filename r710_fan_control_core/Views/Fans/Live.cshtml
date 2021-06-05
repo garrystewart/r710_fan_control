@@ -3,7 +3,7 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/lib/moment/min/moment.min.js"></script>
 <script>
-    var connection = new signalR.HubConnectionBuilder().withUrl("/fansHub").build();
+    var connection = new signalR.HubConnectionBuilder().withUrl("@Url.Content("~/fansHub")").build();
 
     connection.on("UpdateFanSpeeds", function (data, latency, timestamp) {
         console.log(data);

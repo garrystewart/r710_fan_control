@@ -18,7 +18,14 @@ namespace r710_fan_control_core.Services
             IPMIService.Command($"{_rawArgument} 0x30 0x30 0x02 0xff 0x{ConvertSpeedToHex(speed)}");
         }
 
+        public static void SwitchToManual(int speed)
+        {
+            SwitchToManual();
+            IPMIService.Command($"{_rawArgument} 0x30 0x30 0x02 0xff 0x{ConvertSpeedToHex(speed)}");
+        }
+
         private static string ConvertSpeedToHex(string speed) => int.Parse(speed).ToString("x");
+        private static string ConvertSpeedToHex(int speed) => speed.ToString("x");
 
         public static IEnumerable<Sensor> GetFanSensors()
         {
