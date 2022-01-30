@@ -1,48 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using r710_fan_control_core.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using r710_fan_control_core.Services;
 
 namespace r710_fan_control_core.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        [HttpGet]
+        public void Auto()
         {
-            return View();
+            FanService.SwitchToAutomatic();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpGet]
+        public async Task AutoLow()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+            decimal cutoff = 45;
 
-        public IActionResult GetSensors()
-        {
-            return View(IPMIService.GetSensors());
-        }
+            FanService.SwitchToManual("0");
 
-        public IActionResult GetLiveSensors()
-        {
-            return View();
+            // check temps every 10 seconds
+            while (true)
+            {
+                decimal maxTemp = 0;
+
+                try
+                {
+                    maxTemp = (await TemperatureService.GetTemperatures()).Max(t => t.Value);
+                    System.Diagnostics.Debug.WriteLine(maxTemp);
+
+                    if (maxTemp > cutoff)
+                    {
+                        FanService.SwitchToAutomatic();
+                    }
+                    else
+                    {
+                        FanService.SwitchToManual("0");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    FanService.SwitchToAutomatic();
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }  
+
+                Thread.Sleep(10000);
+            }
         }
     }
 }

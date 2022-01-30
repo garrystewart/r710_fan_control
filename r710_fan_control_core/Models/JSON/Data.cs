@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using r710_fan_control.Classes;
 
-namespace r710_fan_control_core.Models
+namespace r710_fan_control_core.Models.JSON
 {
     public partial class Data
     {

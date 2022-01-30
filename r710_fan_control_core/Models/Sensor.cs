@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace r710_fan_control_core.Models
 {
     public class Sensor
     {
-        [Display(Name="Probe Name")]
+        [Display(Name = "Probe Name")]
         public string ProbeName { get; set; }
         public string Reading { get; set; }
 
@@ -69,7 +65,7 @@ namespace r710_fan_control_core.Models
         None,
         Amps,
 
-        [Display(Name ="Degrees C")]
+        [Display(Name = "Degrees C")]
         DegreesC,
 
         Discrete,

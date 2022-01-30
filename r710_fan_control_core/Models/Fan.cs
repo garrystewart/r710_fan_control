@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace r710_fan_control.Models
+﻿namespace r710_fan_control_core.Models
 {
     public class Fan
     {
-        public string Speed { get; set; }
+        public string Display { get; set; }
+        public ushort Value { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using r710_fan_control_core.Models;
+using r710_fan_control_core.Models.JSON;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace r710_fan_control_core.Services
     public class TemperatureService
     {
         private static readonly HttpClient _client = new HttpClient();
-        private const string _url = "http://192.168.18.45:8085/data.json";
+        private const string _url = "http://192.168.18.30:8085/data.json";
 
         public static async Task<IEnumerable<Temperature>> GetTemperatures()
         {
@@ -36,12 +37,6 @@ namespace r710_fan_control_core.Services
             }
 
             return temperatures;
-        }
-
-        public class Temperature
-        {
-            public decimal Value { get; set; }
-            public string Display { get; set; }
         }
     }
 }
