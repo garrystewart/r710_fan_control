@@ -1,10 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using r710_fan_control_core.Services;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace r710_fan_control_core.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ModeService _modeService;
+
+        public HomeController(ModeService modeService)
+        {
+            _modeService = modeService;
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -14,43 +25,13 @@ namespace r710_fan_control_core.Controllers
         [HttpGet]
         public void Auto()
         {
-            FanService.SwitchToAutomatic();
+            _modeService.Auto();
         }
 
         [HttpGet]
-        public async Task AutoLow()
+        public async Task AutoLow(int speedPercent = 0)
         {
-            decimal cutoff = 45;
-
-            FanService.SwitchToManual("0");
-
-            // check temps every 10 seconds
-            while (true)
-            {
-                decimal maxTemp = 0;
-
-                try
-                {
-                    maxTemp = (await TemperatureService.GetTemperatures()).Max(t => t.Value);
-                    System.Diagnostics.Debug.WriteLine(maxTemp);
-
-                    if (maxTemp > cutoff)
-                    {
-                        FanService.SwitchToAutomatic();
-                    }
-                    else
-                    {
-                        FanService.SwitchToManual("0");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    FanService.SwitchToAutomatic();
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
-                }  
-
-                Thread.Sleep(10000);
-            }
+            await _modeService.AutoLow(speedPercent);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using r710_fan_control.Classes;
+using r710_fan_control_core.Classes;
 
 namespace r710_fan_control_core.Models.JSON
 {

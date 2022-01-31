@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace r710_fan_control.Classes
+namespace r710_fan_control_core.Classes
 {
     internal static class Converter
     {

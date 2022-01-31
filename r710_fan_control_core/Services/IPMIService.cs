@@ -17,7 +17,7 @@ namespace r710_fan_control_core.Services
 
         public static string Command(string arguments)
         {
-            Process process = new Process();
+            Process process = new();
 
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
@@ -38,7 +38,7 @@ namespace r710_fan_control_core.Services
 
         private static string GetSensorList()
         {
-            Stopwatch stopwatch = new Stopwatch();
+            Stopwatch stopwatch = new();
             Debug.WriteLine("Getting Sensor List...");
             stopwatch.Start();
             var sensorsList = Command(_sensorList);
@@ -57,22 +57,17 @@ namespace r710_fan_control_core.Services
             {
                 string[] items = lines[i].Split('|');
 
-                Sensor sensor = new Sensor();
+                Sensor sensor = new();
 
                 sensor.ProbeName = items[0].Trim();
                 sensor.Reading = items[1].Trim();
                 sensor.SetMeasurement(items[2].Trim());
                 sensor.Status = items[3].Trim();
 
-                ushort warningMin;
-                ushort warningMax;
-                ushort failureMin;
-                ushort failureMax;
-
-                ushort.TryParse(items[5].Trim(), out warningMin);
-                ushort.TryParse(items[6].Trim(), out warningMax);
-                ushort.TryParse(items[7].Trim(), out failureMin);
-                ushort.TryParse(items[8].Trim(), out failureMax);
+                ushort.TryParse(items[5].Trim(), out ushort warningMin);
+                ushort.TryParse(items[6].Trim(), out ushort warningMax);
+                ushort.TryParse(items[7].Trim(), out ushort failureMin);
+                ushort.TryParse(items[8].Trim(), out ushort failureMax);
 
                 sensor.Thresholds = new Thresholds
                 {
