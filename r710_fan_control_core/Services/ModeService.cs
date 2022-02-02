@@ -11,11 +11,7 @@ namespace r710_fan_control_core.Services
     {
         private bool _autoLowRunning;
         private readonly decimal _cutoff = 45;
-
-        //private readonly decimal _curve1 = 0;
-        //private readonly decimal _curve2 = 20;
-        //private readonly decimal _curve3 = 40;
-        //private readonly decimal _curve4 = 60;
+        private readonly int _stepDownTime = 30;
 
         public void Auto()
         {
@@ -23,11 +19,10 @@ namespace r710_fan_control_core.Services
             _autoLowRunning = false;
         }
 
-        public async Task AutoLow(int speedPercent)
+        public async Task AutoLow()
         {
             if (!_autoLowRunning)
             {
-                FanService.SwitchToManual(speedPercent);
                 _autoLowRunning = true;
 
                 while (true)
@@ -46,7 +41,8 @@ namespace r710_fan_control_core.Services
                         }
                         else
                         {
-                            FanService.SwitchToManual(speedPercent);
+                            System.Diagnostics.Debug.WriteLine($"maxTemp: {maxTemp} | FanCurve: {FanCurve.GetFanSpeed(maxTemp)}");
+                            FanService.SwitchToManual(FanCurve.GetFanSpeed(maxTemp));
                         }
                     }
                     catch (Exception)
@@ -59,38 +55,53 @@ namespace r710_fan_control_core.Services
             }
         }
 
-        //public class FanCurve
-        //{
-        //    public ICollection<Entry> Entries { get; set; }
+        public static class FanCurve
+        {
+            public static IEnumerable<Entry> ReferencePoints => new List<Entry>() {
+                new Entry { Temperature = 40, FanSpeed = 0 },
+                new Entry { Temperature = 60, FanSpeed = 22 },
+                new Entry { Temperature = 80, FanSpeed = 100 }
+            };
 
-        //    public IEnumerable<Entry> BaseEntries => new List<Entry>() { 
-        //        new Entry { Temperature = 30, FanSpeed = 22 },
-        //        new Entry { Temperature = 40, FanSpeed = 33 },
-        //        new Entry { Temperature = 50, FanSpeed = 44 },
-        //        new Entry { Temperature = 60, FanSpeed = 55 }
-        //    };
+            public class Entry
+            {
+                public decimal Temperature { get; set; }
+                public int FanSpeed { get; set; }
+            }
 
-        //    public class Entry
-        //    {
-        //        public decimal Temperature { get; set; }
-        //        public int FanSpeed { get; set; }
-        //    }
+            public static int GetFanSpeed(decimal temperature)
+            {
+                if (temperature < ReferencePoints.First().Temperature)
+                {
+                    var fanSpeedUnit = ReferencePoints.First().FanSpeed / ReferencePoints.First().Temperature;
 
-        //    public int GetFanSpeed(decimal temperature)
-        //    {
-        //        var startingTemp = 0;
-        //        var startingFanSpeed = 0;
+                    return Convert.ToInt32(Math.Floor(temperature * fanSpeedUnit));
+                }
+                else if (temperature > ReferencePoints.Last().Temperature)
+                {
+                    var fanSpeedUnit = ReferencePoints.Last().FanSpeed / (100 - ReferencePoints.Last().Temperature);
 
-        //        foreach (var baseEntry in BaseEntries)
-        //        {
-        //            var fanSpeedDifference = baseEntry.FanSpeed - startingFanSpeed;
+                    return Convert.ToInt32(Math.Floor(temperature * fanSpeedUnit));
+                }
+                else
+                {
+                    for (int i = 0; i < ReferencePoints.Count(); i++)
+                    {
+                        if (temperature >= ReferencePoints.ElementAt(i).Temperature && temperature < ReferencePoints.ElementAt(i + 1).Temperature)
+                        {
+                            var temperatureDifference = ReferencePoints.ElementAt(i + 1).Temperature - ReferencePoints.ElementAt(i).Temperature;
+                            var fanSpeedDifference = ReferencePoints.ElementAt(i + 1).FanSpeed - ReferencePoints.ElementAt(i).FanSpeed;
 
-        //            for (int i = startingTemp; i < baseEntry.Temperature; i++)
-        //            {
+                            var fanSpeedUnit = fanSpeedDifference / temperatureDifference;
 
-        //            }
-        //        }
-        //    }
-        //}
+                            return Convert.ToInt32(Math.Floor(((temperature - ReferencePoints.ElementAt(i).Temperature) * fanSpeedUnit) + ReferencePoints.ElementAt(i).FanSpeed));
+                            
+                        }
+                    }
+
+                    throw new Exception();
+                }
+            }
+        }
     }
 }

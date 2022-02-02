@@ -29,9 +29,9 @@ namespace r710_fan_control_core.Controllers
         }
 
         [HttpGet]
-        public async Task AutoLow(int speedPercent = 0)
+        public async Task AutoLow()
         {
-            await _modeService.AutoLow(speedPercent);
+            await _modeService.AutoLow();
         }
     }
 }
