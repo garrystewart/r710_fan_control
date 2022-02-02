@@ -10,7 +10,7 @@ namespace r710_fan_control_core.Services
     public class ModeService
     {
         private bool _autoLowRunning;
-        private readonly decimal _cutoff = 45;
+        private readonly decimal _cutoff = 80;
         private readonly int _stepDownTime = 30;
 
         public void Auto()
