@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace r710_fan_control_core.Models.API
 {
     public class HomeAssistant
     {
         public FanType Fans { get; set; }
-
         public IEnumerable<PowerType> Power { get; set; }
+        public DateTime IpmiLastUpdated { get; set; }
+        public DateTime OpenHardwareMonitorLastUpdated { get; set; }
+        public long IpmiLatency { get; set; }
 
         public class FanType
         {

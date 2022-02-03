@@ -13,10 +13,22 @@ namespace r710_fan_control_core.Controllers
     [ApiController]
     public class HAController : ControllerBase
     {
+        private readonly IpmiService _ipmiService;
+
+        public HAController(IpmiService ipmiService)
+        {
+            _ipmiService = ipmiService;
+        }
+
         [HttpGet]
         public HomeAssistant Get()
         {
-            var sensors = IPMIService.GetSensors();
+            while (_ipmiService.Sensors == null)
+            {
+
+            }
+
+            var sensors = _ipmiService.Sensors;
 
             var power = new List<HomeAssistant.PowerType>();
 
@@ -73,7 +85,9 @@ namespace r710_fan_control_core.Controllers
                         Measurement = "RPM"
                     }
                 },
-                Power = power
+                Power = power,
+                IpmiLastUpdated = _ipmiService.LastUpdated,
+                IpmiLatency = _ipmiService.Latency,
             };
         }
     }

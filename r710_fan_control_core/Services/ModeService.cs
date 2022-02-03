@@ -9,13 +9,26 @@ namespace r710_fan_control_core.Services
 {
     public class ModeService
     {
+        private readonly FanService _fanService;
+
+        public ModeService(FanService fanService)
+        {
+            _fanService = fanService;
+        }
+
         private bool _autoLowRunning;
         private readonly decimal _cutoff = 80;
         private readonly int _stepDownTime = 30;
 
+        public void Manual(int speedPercent)
+        {
+            _fanService.SwitchToManual(speedPercent);
+            _autoLowRunning = false;
+        }
+
         public void Auto()
         {
-            FanService.SwitchToAutomatic();
+            _fanService.SwitchToAutomatic();
             _autoLowRunning = false;
         }
 
@@ -37,17 +50,17 @@ namespace r710_fan_control_core.Services
 
                         if (maxTemp > _cutoff)
                         {
-                            FanService.SwitchToAutomatic();
+                            _fanService.SwitchToAutomatic();
                         }
                         else
                         {
                             System.Diagnostics.Debug.WriteLine($"maxTemp: {maxTemp} | FanCurve: {FanCurve.GetFanSpeed(maxTemp)}");
-                            FanService.SwitchToManual(FanCurve.GetFanSpeed(maxTemp));
+                            _fanService.SwitchToManual(FanCurve.GetFanSpeed(maxTemp));
                         }
                     }
                     catch (Exception)
                     {
-                        FanService.SwitchToAutomatic();
+                        _fanService.SwitchToAutomatic();
                     }
 
                     Thread.Sleep(10000);

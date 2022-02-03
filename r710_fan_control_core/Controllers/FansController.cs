@@ -1,25 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using r710_fan_control_core.Services;
-using System;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace r710_fan_control_core.Controllers
 {
-    public class HomeController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class FansController : ControllerBase
     {
         private readonly ModeService _modeService;
 
-        public HomeController(ModeService modeService)
+        public FansController(ModeService modeService)
         {
             _modeService = modeService;
-        }
-
-        [HttpGet]
-        public IActionResult Index()
-        {
-            return View();
         }
 
         [HttpGet]
@@ -32,6 +26,12 @@ namespace r710_fan_control_core.Controllers
         public async Task AutoLow()
         {
             await _modeService.AutoLow();
+        }
+
+        [HttpGet]
+        public void Manual(int speedPercent)
+        {
+            _modeService.Manual(speedPercent);
         }
     }
 }

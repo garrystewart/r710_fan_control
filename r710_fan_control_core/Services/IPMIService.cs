@@ -1,21 +1,39 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using r710_fan_control_core.Models;
 
 namespace r710_fan_control_core.Services
 {
-    public static class IPMIService
+    public class IpmiService
     {
         private const string _hostname = "192.168.18.61";
         private const string _user = "root";
         private const string _password = "calvin";
 
-        private static readonly string _baseArguments = $@"C:\ipmitool_1.8.18-dellemc_p001\ipmitool -I lanplus -H {_hostname} -U {_user} -P {_password}";
+        private readonly string _baseArguments;
 
-        public static readonly string rawArgument = $"{_baseArguments} raw";
-        private static readonly string _sensorList = $"{_baseArguments} sensor list";
+        public readonly string _rawArgument;
+        private readonly string _sensorList;
 
-        public static string Command(string arguments)
+        public IpmiService()
+        {
+            _baseArguments = $@"C:\ipmitool_1.8.18-dellemc_p001\ipmitool -I lanplus -H {_hostname} -U {_user} -P {_password}";
+
+            _rawArgument = $"{_baseArguments} raw";
+            _sensorList = $"{_baseArguments} sensor list";
+
+            BackgroundWorker backgroundWorker = new BackgroundWorker();
+            backgroundWorker.DoWork += GetSensors;
+            backgroundWorker.RunWorkerAsync();
+        }
+
+        public IEnumerable<Sensor> Sensors { get; set; }
+        public long Latency { get; set; }
+        public DateTime LastUpdated { get; set; }
+
+        public string Command(string arguments)
         {
             Process process = new();
 
@@ -31,23 +49,29 @@ namespace r710_fan_control_core.Services
             return output;
         }
 
-        public static IEnumerable<Sensor> GetSensors()
+        private void GetSensors(object sender, DoWorkEventArgs e)
         {
-            return ConvertSensorOutputToModel(GetSensorList());
+            while (true)
+            {
+                Sensors = ConvertSensorOutputToModel(GetSensorList());
+            }             
         }
 
-        private static string GetSensorList()
+        private string GetSensorList()
         {
             Stopwatch stopwatch = new();
-            Debug.WriteLine("Getting Sensor List...");
+
             stopwatch.Start();
             var sensorsList = Command(_sensorList);
             stopwatch.Stop();
-            Debug.WriteLine($"Finished getting sensor list. Took {stopwatch.ElapsedMilliseconds}ms");
+
+            Latency = stopwatch.ElapsedMilliseconds;
+            LastUpdated = DateTime.Now;
+
             return sensorsList;
         }
 
-        private static IEnumerable<Sensor> ConvertSensorOutputToModel(string output)
+        private IEnumerable<Sensor> ConvertSensorOutputToModel(string output)
         {
             ICollection<Sensor> sensors = new List<Sensor>();
 

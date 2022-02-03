@@ -21,6 +21,8 @@ namespace r710_fan_control_core
         {
             services.AddRazorPages();
             services.AddSingleton<ModeService, ModeService>();
+            services.AddSingleton<IpmiService, IpmiService>();
+            services.AddSingleton<FanService, FanService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

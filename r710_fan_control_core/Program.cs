@@ -8,8 +8,6 @@ namespace r710_fan_control_core
     {   
         public static void Main(string[] args)
         {
-            FanService.SwitchToAutomatic();
-
             CreateHostBuilder(args).Build().Run();
         }
 

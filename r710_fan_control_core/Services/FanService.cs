@@ -4,21 +4,26 @@ using System.Linq;
 
 namespace r710_fan_control_core.Services
 {
-    public static class FanService
+    public class FanService
     {
-        private static readonly string _rawArgument = IPMIService.rawArgument;
-        public static void SwitchToAutomatic() => IPMIService.Command($"{_rawArgument} 0x30 0x30 0x01 0x01");
+        private readonly IpmiService _ipmiService;
 
-        public static void SwitchToManual(int speedPercent)
+        public FanService(IpmiService ipmiService)
         {
-            IPMIService.Command($"{_rawArgument} 0x30 0x30 0x01 0x00");
-            IPMIService.Command($"{_rawArgument} 0x30 0x30 0x02 0xff 0x{speedPercent:x}");
+            _ipmiService = ipmiService;
         }
 
-        public static IEnumerable<Sensor> GetFanSensors()
+        public void SwitchToAutomatic() => _ipmiService.Command($"{_ipmiService._rawArgument} 0x30 0x30 0x01 0x01");
+
+        public void SwitchToManual(int speedPercent)
         {
-            IEnumerable<Sensor> sensors = IPMIService.GetSensors();
-            return sensors.Where(s => s.Measurement == Measurement.RPM);
+            _ipmiService.Command($"{_ipmiService._rawArgument} 0x30 0x30 0x01 0x00");
+            _ipmiService.Command($"{_ipmiService._rawArgument} 0x30 0x30 0x02 0xff 0x{speedPercent:x}");
+        }
+
+        public IEnumerable<Sensor> GetFanSensors()
+        {
+            return _ipmiService.Sensors.Where(s => s.Measurement == Measurement.RPM);
         }
     }
 }
