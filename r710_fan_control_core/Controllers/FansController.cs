@@ -16,18 +16,21 @@ namespace r710_fan_control_core.Controllers
             _modeService = modeService;
         }
 
+        [Route("auto")]
         [HttpGet]
         public void Auto()
         {
             _modeService.Auto();
         }
 
+        [Route("autolow")]
         [HttpGet]
         public async Task AutoLow()
         {
             await _modeService.AutoLow();
         }
 
+        [Route("manual")]
         [HttpGet]
         public void Manual(int speedPercent)
         {

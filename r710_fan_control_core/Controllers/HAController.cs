@@ -86,8 +86,11 @@ namespace r710_fan_control_core.Controllers
                     }
                 },
                 Power = power,
-                IpmiLastUpdated = _ipmiService.LastUpdated,
-                IpmiLatency = _ipmiService.Latency,
+                Ipmi = new HomeAssistant.IpmiType
+                {
+                    LastUpdated = _ipmiService.LastUpdated,
+                    Latency = _ipmiService.Latency
+                }
             };
         }
     }

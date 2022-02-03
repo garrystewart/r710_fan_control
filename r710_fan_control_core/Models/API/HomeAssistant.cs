@@ -7,9 +7,8 @@ namespace r710_fan_control_core.Models.API
     {
         public FanType Fans { get; set; }
         public IEnumerable<PowerType> Power { get; set; }
-        public DateTime IpmiLastUpdated { get; set; }
+        public IpmiType Ipmi { get; set; }
         public DateTime OpenHardwareMonitorLastUpdated { get; set; }
-        public long IpmiLatency { get; set; }
 
         public class FanType
         {
@@ -28,6 +27,12 @@ namespace r710_fan_control_core.Models.API
             public string Name { get; set; }
             public decimal Reading { get; set; }
             public string Measurement { get; set; }
+        }
+
+        public class IpmiType
+        {
+            public DateTime LastUpdated { get; set; }
+            public long Latency { get; set; }
         }
     }
 }
