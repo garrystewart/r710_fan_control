@@ -2,34 +2,30 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using Microsoft.Extensions.Configuration;
 using r710_fan_control_core.Models;
 
 namespace r710_fan_control_core.Services
 {
-    public class IpmiService
+    public class IpmiService : IIpmiService
     {
-        private const string _hostname = "192.168.18.61";
-        private const string _user = "root";
-        private const string _password = "calvin";
-
         private readonly string _baseArguments;
-
-        public readonly string _rawArgument;
+        private readonly string _rawArgument;
         private readonly string _sensorList;
 
-        public IpmiService()
+        public IpmiService(IConfiguration configuration)
         {
-            _baseArguments = $@"C:\ipmitool_1.8.18-dellemc_p001\ipmitool -I lanplus -H {_hostname} -U {_user} -P {_password}";
-
+            _baseArguments = $@"C:\ipmitool_1.8.18-dellemc_p001\ipmitool -I lanplus -H {configuration.GetValue<string>("iDRAC:Hostname")} -U {configuration.GetValue<string>("iDRAC:User")} -P {configuration.GetValue<string>("iDRAC:Password")}";
             _rawArgument = $"{_baseArguments} raw";
             _sensorList = $"{_baseArguments} sensor list";
 
-            BackgroundWorker backgroundWorker = new BackgroundWorker();
+            BackgroundWorker backgroundWorker = new();
             backgroundWorker.DoWork += GetSensors;
             backgroundWorker.RunWorkerAsync();
         }
 
-        public IEnumerable<Sensor> Sensors { get; set; }
+        public string RawArgument { get { return _rawArgument; } }
+        public IEnumerable<IpmiSensor> Sensors { get; set; }
         public long Latency { get; set; }
         public DateTime LastUpdated { get; set; }
 
@@ -54,7 +50,7 @@ namespace r710_fan_control_core.Services
             while (true)
             {
                 Sensors = ConvertSensorOutputToModel(GetSensorList());
-            }             
+            }
         }
 
         private string GetSensorList()
@@ -71,9 +67,9 @@ namespace r710_fan_control_core.Services
             return sensorsList;
         }
 
-        private IEnumerable<Sensor> ConvertSensorOutputToModel(string output)
+        private static IEnumerable<IpmiSensor> ConvertSensorOutputToModel(string output)
         {
-            ICollection<Sensor> sensors = new List<Sensor>();
+            ICollection<IpmiSensor> sensors = new List<IpmiSensor>();
 
             string[] lines = output.Split('\n');
 
@@ -81,17 +77,17 @@ namespace r710_fan_control_core.Services
             {
                 string[] items = lines[i].Split('|');
 
-                Sensor sensor = new();
+                IpmiSensor sensor = new();
 
                 sensor.ProbeName = items[0].Trim();
                 sensor.Reading = items[1].Trim();
                 sensor.SetMeasurement(items[2].Trim());
                 sensor.Status = items[3].Trim();
 
-                ushort.TryParse(items[5].Trim(), out ushort warningMin);
-                ushort.TryParse(items[6].Trim(), out ushort warningMax);
-                ushort.TryParse(items[7].Trim(), out ushort failureMin);
-                ushort.TryParse(items[8].Trim(), out ushort failureMax);
+                _ = ushort.TryParse(items[5].Trim(), out ushort warningMin);
+                _ = ushort.TryParse(items[6].Trim(), out ushort warningMax);
+                _ = ushort.TryParse(items[7].Trim(), out ushort failureMin);
+                _ = ushort.TryParse(items[8].Trim(), out ushort failureMax);
 
                 sensor.Thresholds = new Thresholds
                 {

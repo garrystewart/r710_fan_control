@@ -2,41 +2,32 @@
 using r710_fan_control_core.Models.JSON;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace r710_fan_control_core.Services
 {
-    public class TemperatureService
+    public class TemperatureService : ITemperatureService
     {
-        private static readonly HttpClient _client = new HttpClient();
-        private const string _url = "http://192.168.18.30:8085/data.json";
+        private readonly IOpenHardwareService _openHardwareService;
 
-        public static async Task<IEnumerable<Temperature>> GetTemperatures()
+        public TemperatureService(IOpenHardwareService openHardwareService)
         {
-            string json = await _client.GetStringAsync(_url);
+            _openHardwareService = openHardwareService;
+        }
 
-            Data data = Data.FromJson(json);
+        public int GetMaxTemperature()
+        {
+            var temperatures = new List<int>();
 
-            ICollection<Temperature> temperatures = new List<Temperature>();
-
-            IEnumerable<Data> processors = data.Children.Where(c => c.Text == "WIN-USMAMP0H8B8").Single().Children
-                .Where(c => c.Text == "Intel Xeon L5640").ToList();
-
-            foreach (var temperature in processors
-                .SelectMany(processor => processor.Children
-                .Where(c => c.Text == "Temperatures")
-                .SelectMany(t => t.Children)))
+            foreach (var processor in _openHardwareService.Sensors.Processors)
             {
-                temperatures.Add(new Temperature
-                {
-                    Display = temperature.Value,
-                    Value = decimal.Parse(temperature.Value.Replace(" °C", ""))
-                });
+                temperatures.AddRange(processor.Cores.Select(c => c.Temperature));
             }
 
-            return temperatures;
+            return temperatures.Max();
         }
     }
 }

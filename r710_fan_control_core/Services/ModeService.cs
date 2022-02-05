@@ -7,18 +7,19 @@ using System.Threading.Tasks;
 
 namespace r710_fan_control_core.Services
 {
-    public class ModeService
+    public class ModeService : IModeService
     {
-        private readonly FanService _fanService;
+        private readonly IFanService _fanService;
+        private readonly ITemperatureService _temperatureService;
 
-        public ModeService(FanService fanService)
+        public ModeService(IFanService fanService, ITemperatureService temperatureService)
         {
             _fanService = fanService;
+            _temperatureService = temperatureService;
         }
 
         private bool _autoLowRunning;
         private readonly decimal _cutoff = 80;
-        private readonly int _stepDownTime = 30;
 
         public void Manual(int speedPercent)
         {
@@ -32,7 +33,7 @@ namespace r710_fan_control_core.Services
             _autoLowRunning = false;
         }
 
-        public async Task AutoLow()
+        public void AutoLow()
         {
             if (!_autoLowRunning)
             {
@@ -42,11 +43,9 @@ namespace r710_fan_control_core.Services
                 {
                     if (!_autoLowRunning) break;
 
-                    decimal maxTemp = 0;
-
                     try
                     {
-                        maxTemp = (await TemperatureService.GetTemperatures()).Max(t => t.Value);
+                        decimal maxTemp = _temperatureService.GetMaxTemperature();
 
                         if (maxTemp > _cutoff)
                         {
@@ -108,7 +107,7 @@ namespace r710_fan_control_core.Services
                             var fanSpeedUnit = fanSpeedDifference / temperatureDifference;
 
                             return Convert.ToInt32(Math.Floor(((temperature - ReferencePoints.ElementAt(i).Temperature) * fanSpeedUnit) + ReferencePoints.ElementAt(i).FanSpeed));
-                            
+
                         }
                     }
 

@@ -6,9 +6,9 @@ namespace r710_fan_control_core.Models.API
     public class HomeAssistant
     {
         public FanType Fans { get; set; }
-        public IEnumerable<PowerType> Power { get; set; }
+        public PowerType Power { get; set; }
         public IpmiType Ipmi { get; set; }
-        public DateTime OpenHardwareMonitorLastUpdated { get; set; }
+        public OpenHardwareMonitorType OpenHardwareMonitor { get; set; }        
 
         public class FanType
         {
@@ -19,20 +19,56 @@ namespace r710_fan_control_core.Models.API
         public class Fan
         {
             public int Reading { get; set; }
-            public string Measurement { get; set; }
         }
 
         public class PowerType
         {
-            public string Name { get; set; }
-            public decimal Reading { get; set; }
-            public string Measurement { get; set; }
+            public decimal Current { get; set; }
+            public decimal Voltage { get; set; }
+            public decimal Watts { get; set; }
         }
 
         public class IpmiType
         {
             public DateTime LastUpdated { get; set; }
             public long Latency { get; set; }
+        }
+
+        public class OpenHardwareMonitorType
+        {
+            public OpenHardwareMonitorType()
+            {
+                Cores = new HashSet<Core>();
+            }
+
+            public ICollection<Core> Cores { get; set; }
+            public MemoryType Memory { get; set; }
+            public SolidStateDriveType SolidStateDrive { get; set; }
+            public DateTime LastUpdated { get; set; }
+            public long Latency { get; set; }
+
+            public class Core
+            {
+                public decimal Clock { get; set; }
+                public int Temperature { get; set; }
+                public decimal Load { get; set; }
+            }
+
+            public class MemoryType
+            {
+                public decimal Load { get; set; }
+                public decimal UsedMemory { get; set; }
+                public decimal AvailableMemory { get; set; }
+            }
+
+            public class SolidStateDriveType
+            {
+                public int Temperature { get; set; }
+                public decimal UsedSpace { get; set; }
+                public decimal RemainingLife { get; set; }
+                public decimal WriteAmplification { get; set; }
+                public decimal TotalBytesWritten { get; set; }
+            }
         }
     }
 }

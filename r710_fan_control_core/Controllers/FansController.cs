@@ -9,9 +9,9 @@ namespace r710_fan_control_core.Controllers
     [ApiController]
     public class FansController : ControllerBase
     {
-        private readonly ModeService _modeService;
+        private readonly IModeService _modeService;
 
-        public FansController(ModeService modeService)
+        public FansController(IModeService modeService)
         {
             _modeService = modeService;
         }
@@ -25,9 +25,9 @@ namespace r710_fan_control_core.Controllers
 
         [Route("autolow")]
         [HttpGet]
-        public async Task AutoLow()
+        public void AutoLow()
         {
-            await _modeService.AutoLow();
+            _modeService.AutoLow();
         }
 
         [Route("manual")]

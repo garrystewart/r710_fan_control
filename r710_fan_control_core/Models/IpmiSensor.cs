@@ -2,7 +2,7 @@
 
 namespace r710_fan_control_core.Models
 {
-    public class Sensor
+    public class IpmiSensor
     {
         [Display(Name = "Probe Name")]
         public string ProbeName { get; set; }
@@ -12,30 +12,16 @@ namespace r710_fan_control_core.Models
 
         public void SetMeasurement(string value)
         {
-            switch (value)
+            Measurement = value switch
             {
-                case "Amps":
-                    Measurement = Measurement.Amps;
-                    break;
-                case "degrees C":
-                    Measurement = Measurement.DegreesC;
-                    break;
-                case "discrete":
-                    Measurement = Measurement.Discrete;
-                    break;
-                case "RPM":
-                    Measurement = Measurement.RPM;
-                    break;
-                case "Volts":
-                    Measurement = Measurement.Volts;
-                    break;
-                case "Watts":
-                    Measurement = Measurement.Watts;
-                    break;
-                default:
-                    Measurement = Measurement.None;
-                    break;
-            }
+                "Amps" => Measurement.Amps,
+                "degrees C" => Measurement.DegreesC,
+                "discrete" => Measurement.Discrete,
+                "RPM" => Measurement.RPM,
+                "Volts" => Measurement.Volts,
+                "Watts" => Measurement.Watts,
+                _ => Measurement.None,
+            };
         }
 
         public string Status { get; set; }

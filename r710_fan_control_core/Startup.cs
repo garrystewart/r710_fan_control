@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using r710_fan_control_core.Services;
+using System.Net.Http;
 
 namespace r710_fan_control_core
 {
@@ -20,9 +21,12 @@ namespace r710_fan_control_core
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddSingleton<ModeService, ModeService>();
-            services.AddSingleton<IpmiService, IpmiService>();
-            services.AddSingleton<FanService, FanService>();
+            services.AddSingleton<IModeService, ModeService>();
+            services.AddSingleton<IIpmiService, IpmiService>();
+            services.AddSingleton<IFanService, FanService>();
+            services.AddSingleton<ITemperatureService, TemperatureService>();
+            services.AddSingleton<IOpenHardwareService, OpenHardwareService>();
+            services.AddSingleton<HttpClient, HttpClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
