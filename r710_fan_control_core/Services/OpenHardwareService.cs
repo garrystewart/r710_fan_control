@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace r710_fan_control_core.Services
@@ -129,6 +130,8 @@ namespace r710_fan_control_core.Services
 
                 Latency = stopwatch.ElapsedMilliseconds;
                 LastUpdated = DateTime.Now;
+
+                Thread.Sleep(1000);
             }
         }
     }
