@@ -5,31 +5,26 @@ namespace r710_fan_control_core.Models.API
 {
     public class HomeAssistant
     {
-        public FanType Fans { get; set; }
-        public PowerType Power { get; set; }
         public IpmiType Ipmi { get; set; }
-        public OpenHardwareMonitorType OpenHardwareMonitor { get; set; }        
-
-        public class FanType
-        {
-            public IEnumerable<Fan> FansList { get; set; }
-            public Fan FansModeAverage { get; set; }
-        }
-
-        public class Fan
-        {
-            public int Reading { get; set; }
-        }
-
-        public class PowerType
-        {
-            public decimal Current { get; set; }
-            public decimal Voltage { get; set; }
-            public decimal Watts { get; set; }
-        }
+        public OpenHardwareMonitorType OpenHardwareMonitor { get; set; }  
 
         public class IpmiType
         {
+            public class FanType
+            {
+                public IEnumerable<int> Readings { get; set; }
+                public int ModeAverage { get; set; }
+            }
+
+            public class PowerType
+            {
+                public decimal Current { get; set; }
+                public decimal Voltage { get; set; }
+                public decimal Watts { get; set; }
+            }
+
+            public FanType Fans { get; set; }
+            public PowerType Power { get; set; }
             public DateTime LastUpdated { get; set; }
             public long Latency { get; set; }
         }
@@ -43,7 +38,7 @@ namespace r710_fan_control_core.Models.API
 
             public ICollection<Core> Cores { get; set; }
             public MemoryType Memory { get; set; }
-            public SolidStateDriveType SolidStateDrive { get; set; }
+            //public SolidStateDriveType SolidStateDrive { get; set; }
             public DateTime LastUpdated { get; set; }
             public long Latency { get; set; }
 

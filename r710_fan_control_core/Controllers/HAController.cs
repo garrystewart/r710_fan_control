@@ -42,7 +42,7 @@ namespace r710_fan_control_core.Controllers
 
             var sensors = _ipmiService.Sensors;
 
-            var power = new HomeAssistant.PowerType();
+            var power = new HomeAssistant.IpmiType.PowerType();
 
             var current = sensors.Single(s => s.ProbeName == "Current" && s.Measurement != Measurement.None);
             var voltage = sensors.Single(s => s.ProbeName == "Voltage" && s.Measurement != Measurement.None);
@@ -56,14 +56,14 @@ namespace r710_fan_control_core.Controllers
                     UsedMemory = _openHardwareService.Sensors.Memory.UsedMemory,
                     AvailableMemory = _openHardwareService.Sensors.Memory.AvailableMemory
                 },
-                SolidStateDrive = new HomeAssistant.OpenHardwareMonitorType.SolidStateDriveType
-                {
-                    Temperature = _openHardwareService.Sensors.SolidStateDrive.Temperature,
-                    UsedSpace = _openHardwareService.Sensors.SolidStateDrive.UsedSpace,
-                    RemainingLife = _openHardwareService.Sensors.SolidStateDrive.RemainingLife,
-                    WriteAmplification = _openHardwareService.Sensors.SolidStateDrive.WriteAmplification,
-                    TotalBytesWritten = _openHardwareService.Sensors.SolidStateDrive.TotalBytesWritten
-                },
+                //SolidStateDrive = new HomeAssistant.OpenHardwareMonitorType.SolidStateDriveType
+                //{
+                //    Temperature = _openHardwareService.Sensors.SolidStateDrive.Temperature,
+                //    UsedSpace = _openHardwareService.Sensors.SolidStateDrive.UsedSpace,
+                //    RemainingLife = _openHardwareService.Sensors.SolidStateDrive.RemainingLife,
+                //    WriteAmplification = _openHardwareService.Sensors.SolidStateDrive.WriteAmplification,
+                //    TotalBytesWritten = _openHardwareService.Sensors.SolidStateDrive.TotalBytesWritten
+                //},
                 LastUpdated = _openHardwareService.LastUpdated,
                 Latency = _openHardwareService.Latency
             };
@@ -83,32 +83,25 @@ namespace r710_fan_control_core.Controllers
 
             return new HomeAssistant()
             {
-                Fans = new HomeAssistant.FanType
+                Ipmi = new HomeAssistant.IpmiType
                 {
-                    FansList = sensors.Where(s => s.ProbeName.Contains("FAN"))
-                        .Select(s => new HomeAssistant.Fan
-                        {
-                            Reading = Convert.ToInt32(Convert.ToDecimal(s.Reading))
-                        })
-                        .ToList(),
-                    FansModeAverage = new HomeAssistant.Fan
+                    Fans = new HomeAssistant.IpmiType.FanType
                     {
-                        Reading = sensors
+                        Readings = sensors.Where(s => s.ProbeName.Contains("FAN"))
+                        .Select(s => Convert.ToInt32(Convert.ToDecimal(s.Reading))),
+                        ModeAverage = sensors
                         .Where(s => s.ProbeName.Contains("FAN"))
                         .GroupBy(n => Convert.ToInt32(Convert.ToDecimal(n.Reading)))
                         .OrderByDescending(g => g.Count())
                         .Select(g => g.Key)
                         .FirstOrDefault()
-                    }
-                },
-                Power = new HomeAssistant.PowerType
-                {
-                    Current = Convert.ToDecimal(current.Reading),
-                    Voltage = Convert.ToDecimal(voltage.Reading),
-                    Watts = Convert.ToDecimal(system.Reading)
-                },
-                Ipmi = new HomeAssistant.IpmiType
-                {
+                    },
+                    Power = new HomeAssistant.IpmiType.PowerType
+                    {
+                        Current = Convert.ToDecimal(current.Reading),
+                        Voltage = Convert.ToDecimal(voltage.Reading),
+                        Watts = Convert.ToDecimal(system.Reading)
+                    },
                     LastUpdated = _ipmiService.LastUpdated,
                     Latency = _ipmiService.Latency
                 },
