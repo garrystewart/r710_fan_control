@@ -38,7 +38,7 @@ namespace r710_fan_control_core.Models.API
 
             public ICollection<Core> Cores { get; set; }
             public MemoryType Memory { get; set; }
-            //public SolidStateDriveType SolidStateDrive { get; set; }
+            public SolidStateDriveType SolidStateDrive { get; set; }
             public DateTime LastUpdated { get; set; }
             public long Latency { get; set; }
 

@@ -56,14 +56,14 @@ namespace r710_fan_control_core.Controllers
                     UsedMemory = _openHardwareService.Sensors.Memory.UsedMemory,
                     AvailableMemory = _openHardwareService.Sensors.Memory.AvailableMemory
                 },
-                //SolidStateDrive = new HomeAssistant.OpenHardwareMonitorType.SolidStateDriveType
-                //{
-                //    Temperature = _openHardwareService.Sensors.SolidStateDrive.Temperature,
-                //    UsedSpace = _openHardwareService.Sensors.SolidStateDrive.UsedSpace,
-                //    RemainingLife = _openHardwareService.Sensors.SolidStateDrive.RemainingLife,
-                //    WriteAmplification = _openHardwareService.Sensors.SolidStateDrive.WriteAmplification,
-                //    TotalBytesWritten = _openHardwareService.Sensors.SolidStateDrive.TotalBytesWritten
-                //},
+                SolidStateDrive = new HomeAssistant.OpenHardwareMonitorType.SolidStateDriveType
+                {
+                    Temperature = _openHardwareService.Sensors.SolidStateDrive.Temperature,
+                    UsedSpace = _openHardwareService.Sensors.SolidStateDrive.UsedSpace,
+                    RemainingLife = _openHardwareService.Sensors.SolidStateDrive.RemainingLife,
+                    WriteAmplification = _openHardwareService.Sensors.SolidStateDrive.WriteAmplification,
+                    TotalBytesWritten = _openHardwareService.Sensors.SolidStateDrive.TotalBytesWritten
+                },
                 LastUpdated = _openHardwareService.LastUpdated,
                 Latency = _openHardwareService.Latency
             };

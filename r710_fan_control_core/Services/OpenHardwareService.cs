@@ -99,29 +99,29 @@ namespace r710_fan_control_core.Services
                             .Single(c => c.Text == "Available Memory").Value.Replace(" GB", ""))
                     },
 
-                    //SolidStateDrive = new OpenHardwareMonitorSensors.SolidStateDriveType
-                    //{
-                    //    Temperature = Convert.ToInt32(Convert.ToDecimal(data.Children.First().Children
-                    //        .Single(c => c.Text == "CT500MX500SSD1").Children
-                    //        .Single(c => c.Text == "Temperatures").Children
-                    //        .Single(c => c.Text == "Temperature").Value.Replace(" °C", ""))),
-                    //    UsedSpace = Convert.ToDecimal(data.Children.First().Children
-                    //        .Single(c => c.Text == "CT500MX500SSD1").Children
-                    //        .Single(c => c.Text == "Load").Children
-                    //        .Single(c => c.Text == "Used Space").Value.Replace(" %", "")),
-                    //    RemainingLife = Convert.ToDecimal(data.Children.First().Children
-                    //        .Single(c => c.Text == "CT500MX500SSD1").Children
-                    //        .Single(c => c.Text == "Levels").Children
-                    //        .Single(c => c.Text == "Remaining Life").Value.Replace(" %", "")),
-                    //    WriteAmplification = Convert.ToDecimal(data.Children.First().Children
-                    //        .Single(c => c.Text == "CT500MX500SSD1").Children
-                    //        .Single(c => c.Text == "Factors").Children
-                    //        .Single(c => c.Text == "Write Amplification").Value),
-                    //    TotalBytesWritten = Convert.ToDecimal(data.Children.First().Children
-                    //        .Single(c => c.Text == "CT500MX500SSD1").Children
-                    //        .Single(c => c.Text == "Data").Children
-                    //        .Single(c => c.Text == "Total Bytes Written").Value.Replace(" GB", ""))
-                    //},
+                    SolidStateDrive = new OpenHardwareMonitorSensors.SolidStateDriveType
+                    {
+                        Temperature = Convert.ToInt32(Convert.ToDecimal(data.Children.First().Children
+                            .Single(c => c.Text == "CT500MX500SSD1").Children
+                            .Single(c => c.Text == "Temperatures").Children
+                            .Single(c => c.Text == "Temperature").Value.Replace(" °C", ""))),
+                        UsedSpace = Convert.ToDecimal(data.Children.First().Children
+                            .Single(c => c.Text == "CT500MX500SSD1").Children
+                            .Single(c => c.Text == "Load").Children
+                            .Single(c => c.Text == "Used Space").Value.Replace(" %", "")),
+                        RemainingLife = Convert.ToDecimal(data.Children.First().Children
+                            .Single(c => c.Text == "CT500MX500SSD1").Children
+                            .Single(c => c.Text == "Levels").Children
+                            .Single(c => c.Text == "Remaining Life").Value.Replace(" %", "")),
+                        WriteAmplification = Convert.ToDecimal(data.Children.First().Children
+                            .Single(c => c.Text == "CT500MX500SSD1").Children
+                            .Single(c => c.Text == "Factors").Children
+                            .Single(c => c.Text == "Write Amplification").Value),
+                        TotalBytesWritten = Convert.ToDecimal(data.Children.First().Children
+                            .Single(c => c.Text == "CT500MX500SSD1").Children
+                            .Single(c => c.Text == "Data").Children
+                            .Single(c => c.Text == "Total Bytes Written").Value.Replace(" GB", ""))
+                    },
 
                     Processors = processorsList
                 };
